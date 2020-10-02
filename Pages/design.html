@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlazerMovies</title>
+
+    <link rel="stylesheet" href="../wwwroot/css/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="../wwwroot/css/custom.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="navspacing border-bottom">
+        <ul class="nav justify-content-left">
+          <li class="nav-item">
+            <img src="img/Star_Wars.svg" width="83px;" height="37px" />
+          </li>
+          <li class="nav-item">
+            <a class="nav-link">Filme</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link">Charaktere</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link">Planeten</a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <p class="title">Filme</p>
+
+        <div class="d-flex justify-content-start flex-wrap p-2">
+          <div class="card" >
+            <img class="card-img-top" src="img/1.png" alt="Card image cap" />
+            <div class="card-body">
+              <h4 class="card-title">Thumbnail Label</h4>
+              <p class="card-text">Director: George Locas<br/>
+               Production: Gary kurtz<br/>
+              Erscheinungsdatum: 25.05.1977<br/><br/>
+              <a href="filmdetail.html" class="card-link">Mehr Informationen..</a>
+            </div>
+          </div>
+
+      
+        </div>
+      </div>
+      <div>
+        <p class="title">Filme</p>
+
+        <div class="d-flex justify-content-start flex-wrap p-2">
+          <div class="card" >
+            <img class="card-img-top" src="img/1.png" alt="Card image cap" />
+            <div class="card-body">
+              <h4 class="card-title">Thumbnail Label</h4>
+              <p class="card-text">Director: George Locas<br/>
+               Production: Gary kurtz<br/>
+              Erscheinungsdatum: 25.05.1977<br/><br/>
+              <a href="filmdetail.html" class="card-link">Mehr Informationen..</a>
+            </div>
+          </div>
+
+      
+        </div>
+      </div>
+    </div>
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+
+        if (window.location.pathname.includes("/")) {
+                var s = window.location.pathname.split("/");
+                var tag = s[s.length - 1];
+                if (tag == "films") {
+                    $("#films").addClass("underline")
+                } else if (tag == "characters") {
+                    $("#characters").addClass("underline")
+
+                } 
+            }
+      });
+    </script>
+  </body>
+</html>

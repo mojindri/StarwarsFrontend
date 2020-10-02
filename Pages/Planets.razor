@@ -1,0 +1,51 @@
+﻿@page "/planets"
+
+@inject Repository<Planet> planetService
+
+@inject NavigationManager navigation;
+ 
+@if (planets == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div>
+        <p class="title pb">Planets</p>
+        <div class="d-flex justify-content-start flex-wrap p-2">
+            @foreach (Planet planet in planets)
+            {
+
+                <div class="card">
+                    <img class="card-img-top" src="/img/Star_Wars.svg" alt="@planet.Name" />
+                    <div class="card-body ">
+                        <h4 class="card-title">@planet.Name</h4>
+                        <p class="card-text">
+                            Klima: @planet.Climate  <br />
+                            Bevölkerunganszahl: @planet.Population<br />
+                        </p>
+                        <a @onclick="@(()=> NavigateTo(planet.Url))" href="#" class="card-link ">Mehr Informationen..</a>
+                    </div>
+
+                </div>
+
+            }
+
+        </div>
+    </div>
+}
+@code {
+    private ICollection<Planet> planets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        planets = await planetService.GetEntities();
+       
+        StateHasChanged();
+
+    }
+    public void NavigateTo(string url)
+    {
+        navigation.NavigateTo(url.Replace(@"http://swapi.dev/api/", ""));
+    }
+}

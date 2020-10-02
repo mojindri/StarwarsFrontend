@@ -1,0 +1,51 @@
+﻿@page "/people"
+@page "/characters"
+
+@inject Repository<Person> filmService
+@inject IJSRuntime jsRunner;
+@inject NavigationManager navigation;
+ 
+@if (people == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div>
+        <p class="title">Charaktere</p>
+        <div class="d-flex justify-content-start flex-wrap p-2">
+            @foreach (Person item in people)
+            {
+
+                <div class="card">
+                    <img class="card-img-top" src="/img/Star_Wars.svg" alt="@item.Name" />
+                    <div class="card-body">
+                        <h4 class="card-title">@item.Name</h4>
+
+                        <a @onclick="@(()=>NavigateTo(item.Url))" href="#" class="card-link">Mehr Informationen..</a>
+                    </div>
+                </div>
+
+            }
+
+        </div>
+    </div>
+
+}
+
+@code {
+    private ICollection<Person> people;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        people = await filmService.GetEntities();
+        
+        StateHasChanged();
+    }
+    public void NavigateTo(string url)
+    {
+        navigation.NavigateTo(url.Replace(@"http://swapi.dev/api/", ""));
+
+    }
+}

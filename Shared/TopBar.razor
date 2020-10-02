@@ -1,0 +1,64 @@
+﻿
+ 
+@inject NavigationManager navigation;
+
+
+<div class="navspacing border-bottom">
+    <ul class="nav justify-content-left">
+        <li class="nav-item">
+            <img src="img/Star_Wars.svg" width="83px;" height="37px" />
+        </li>
+        <li class="nav-item">
+            <a id="films" class="nav-link @underlineFilms" @onclick="NavigationToFilm">Filme</a>
+        </li>
+        <li class="nav-item">
+            <a id="characters" class="nav-link @underlineCharacter" @onclick="NavigationToCharacters">Charaktere</a>
+        </li>
+        <li class="nav-item">
+            <a id="planets" class="nav-link @underlinePlants" @onclick="NavigationToPlants">Planeten</a>
+        </li>
+    </ul>
+</div>
+
+@code {
+    private string underlinePlants;
+    private string underlineCharacter;
+    private string underlineFilms;
+
+    protected override void OnInitialized()
+    {
+
+       
+        
+    }
+ 
+    public void Dispose()
+    {    
+    }
+
+    private void DeactiveAll()
+    {
+        underlinePlants = underlineCharacter = underlineFilms = "";
+
+
+    }
+    public void NavigationToFilm()
+    {
+        DeactiveAll();
+
+        underlineFilms = "underline";
+        navigation.NavigateTo("/films");
+    }
+    public void NavigationToCharacters()
+    {
+        DeactiveAll();
+        underlineCharacter = "underline";
+        navigation.NavigateTo("/people");
+    }
+    public void NavigationToPlants()
+    {
+        DeactiveAll();
+        underlinePlants = "underline";
+        navigation.NavigateTo("/planets");
+    }
+}

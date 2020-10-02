@@ -1,0 +1,105 @@
+﻿@page "/films/{filmid:int}"
+@page "/filmdetail/{filmid:int}"
+@inject Repository<Film> filmService;
+@inject Repository<Person> characterService;
+@inject Repository<Planet> planetService;
+ 
+@inject NavigationManager navigation;
+<h6 class="titledetail text-center">Filmdetails</h6>
+<hr style="width: 30px; text-align: center" />
+<div class="flex-fill text-center">
+    <h1><strong>@(film!=null? film.Title:"" )</strong></h1>
+</div>
+<div class="details mt-5 d-flex flex-wrap flex-">
+
+
+    @if (@film == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+
+
+        <div class="row">
+            <div class="col">
+                <h3><strong>Details:</strong></h3>
+                <strong>Title: </strong> @film.Title <br />
+                <strong>Produtzenten: </strong> @film.Producer<br />
+                <strong>Erscheinungsdatum: </strong> @film.ReleaseDate<br /><br />
+                <div style="width:100%;text-align:justify;">@film.OpeningCrawl</div><br />
+            </div>
+            <div class="col">
+                <img src="img/Star_Wars.svg" class="ml-auto  " style=" height: auto;width: 100%; " />
+            </div>
+        </div>
+        <div>
+            @if (people != null)
+            {
+                <h3><strong>Characters: </strong></h3>
+                foreach (var item in people)
+                {
+
+                    <div class="infobox btn-outline-light btn" @onclick="@(()=> NavigateTo(item.Url))">
+                        <strong class="infoxboxtext">@item.Name</strong>
+                    </div>
+                }
+                <div class="infobox btn-outline-light btn">
+                    <strong class="infoxboxtext">...</strong>
+                </div>
+            }
+            <br />
+            <br />
+            @if (planets != null)
+            {
+                <h3> <strong>Planets: </strong></h3>
+                foreach (var item in planets)
+                {
+
+                    <div class="infobox btn-outline-light btn" @onclick="@(()=> NavigateTo(item.Url))">
+                        <strong class="infoxboxtext">@item.Name</strong>
+                    </div>
+                }
+                <div class="infobox btn-outline-light btn">
+                    <strong class="infoxboxtext">...</strong>
+                </div>
+            }
+        </div>
+
+    }
+</div>
+
+@code{
+
+
+    [Parameter]
+    public int FilmId { get; set; }
+    public Film film;
+    public ICollection<Person> people;
+    public ICollection<Planet> planets;
+
+    protected override async void OnInitialized()
+    {
+
+
+        film = await filmService.GetById(FilmId);
+        people = new List<Person>();
+        planets = new List<Planet>();
+        //NOT OPTIMAL, DUE TO IILOGICAL SERVER API STRUCTURE
+        foreach (var person in film.Characters.Take(5).ToArray())
+        {
+            people.Add(await characterService.GetByUrl(person));
+        }
+        foreach (var item in film.Planets.Take(5).ToArray())
+        {
+            planets.Add(await planetService.GetByUrl(item));
+        }
+      
+        StateHasChanged();
+    }
+    public void NavigateTo(string url)
+    {
+        navigation.NavigateTo(url.Replace(@"http://swapi.dev/api/", ""));
+    }
+
+}

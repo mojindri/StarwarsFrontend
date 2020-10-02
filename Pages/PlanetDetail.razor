@@ -1,0 +1,108 @@
+﻿@page "/planets/{planetid:int}"
+ 
+@inject Repository<Film> filmService;
+@inject Repository<Person> characterService;
+@inject Repository<Planet> planetService;
+@inject NavigationManager navigation;
+<h6 class="titledetail text-center">Planetdetails</h6>
+<hr style="width: 30px; text-align: center" />
+<div class="flex-fill text-center">
+    <h1><strong>@(planet != null ? planet.Name : "")</strong></h1>
+</div>
+<div class="details mt-5 d-flex flex-wrap flex-">
+
+    @if (planet == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+
+        <div class="row">
+            <div class="col">
+                <h3><strong>Details:</strong></h3>
+                <strong>Klima: </strong> @planet.Climate <br />
+                <strong>Durchmesser: </strong> @planet.Diameter<br />
+                <strong>Gravitation: </strong> @planet.Gravity<br />
+                <strong>Terrain: </strong> @planet.Terrain<br />
+
+            </div>
+            <div class="col">
+                <img src="img/Star_Wars.svg" class="ml-auto  " style=" height: auto;width: 100%; " />
+            </div>
+        </div>
+        <div>
+            <br />
+            <br />
+            @if (films != null)
+            {
+                <h3><strong>Films: </strong></h3>
+                foreach (var film in films)
+                {
+
+                    <div class="infobox btn-outline-light btn" @onclick="@(()=> NavigateTo(film.Url))">
+                        <strong class="infoxboxtext">@film.Title</strong>
+                    </div>
+                }
+                <div class="infobox btn-outline-light btn">
+                    <strong class="infoxboxtext">...</strong>
+                </div>
+            }
+            <br />
+            <br />
+            @if (characters != null)
+            {
+                <h3><strong>Bewohnerinnen:</strong></h3>
+                foreach (var character in characters)
+                {
+
+                    <div class="infobox btn-outline-light btn" @onclick="@(()=> NavigateTo(character.Url))">
+                        <strong class="infoxboxtext">@character.Name</strong>
+                    </div>
+                }
+                <div class="infobox btn-outline-light btn">
+                    <strong class="infoxboxtext">...</strong>
+                </div>
+            }
+
+        </div>
+
+    }
+</div>
+
+@code{
+
+
+    [Parameter]
+    public int PlanetId { get; set; }
+    public Planet planet;
+    public ICollection<Film> films;
+    public ICollection<Person> characters;
+
+    protected override async void OnInitialized()
+    {
+
+
+        planet = await planetService.GetById(PlanetId);
+        films = new List<Film>();
+        characters = new List<Person>();
+        //NOT OPTIMAL, DUE TO IILOGICAL SERVER API STRUCTURE
+
+        foreach (var film in planet.Films.Take(5).ToList())
+        {
+            films.Add(await filmService.GetByUrl(film));
+        }
+        foreach (var character in planet.Residents.Take(5).ToList())
+        {
+            characters.Add(await characterService.GetByUrl(character));
+        }
+     
+
+        StateHasChanged();
+    }
+    public void NavigateTo(string url)
+    {
+        navigation.NavigateTo(url.Replace(@"http://swapi.dev/api/", ""));
+    }
+
+}

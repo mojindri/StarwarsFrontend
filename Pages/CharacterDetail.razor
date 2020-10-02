@@ -1,0 +1,169 @@
+﻿@page "/people/{characterid:int}"
+@inject Repository<Film> filmService;
+@inject Repository<Person> characterService;
+@inject Repository<Planet> planetService;
+@inject Repository<Starship> starshipService;
+@inject Repository<Vehicle> vehicleService;
+ 
+@inject NavigationManager navigation;
+<h6 class="titledetail text-center">Charakterdetails</h6>
+<hr style="width: 30px; text-align: center" />
+<div class="flex-fill text-center">
+    <h1><strong>@(character != null ? character.Name : "")</strong></h1>
+</div>
+<div class="details mt-5 d-flex flex-wrap flex-">
+
+
+    @if (character == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+
+        <div class="row">
+            <div class="col">
+
+                <h3><strong>Details:</strong></h3>
+                <strong>Größe: </strong> @(character.Height.Insert(1,",")) <br />
+                <strong>Gewicht: </strong> @character.Mass  kg<br />
+                <strong>Haarfarbe: </strong> @character.HairColor<br />
+                <strong>Augenfarbe: </strong> @character.EyeColor<br />
+                <strong>Geburtsjahr: </strong> @character.BirthYear<br />
+                <strong>Geschlecht: </strong> @character.Gender<br /><br />
+
+                @if (homePlanet != null)
+                {
+                    <strong>Heimatplanet: </strong>
+                    <div class="infobox btn-outline-light btn" @onclick="@(()=> NavigateTo(character.Homeworld))">
+                        <strong class="infoxboxtext">@homePlanet.Name</strong>
+                    </div>
+                }
+            </div>
+            <div class="col">
+                <img src="img/Star_Wars.svg" class="ml-auto  " style=" height: auto;width: 100%; " />
+            </div>
+        </div>
+        <div>
+            @if (films != null)
+            {
+                <h3> <strong>Filme: </strong></h3>
+                foreach (var film in films)
+                {
+
+                    <div class="infobox btn-outline-light btn" @onclick="@(()=> NavigateTo(film.Url))">
+                        <strong class="infoxboxtext">@film.Title</strong>
+                    </div>
+                }
+                <div class="infobox btn-outline-light btn">
+                    <strong class="infoxboxtext">...</strong>
+                </div>
+            }
+            <br />
+            <br />
+            @if (planets != null)
+            {
+                <h3> <strong>Planeten: </strong></h3>
+                foreach (var planet in planets)
+                {
+
+                    <div class="infobox btn-outline-light btn" @onclick="@(()=> NavigateTo(planet.Url))">
+                        <strong class="infoxboxtext">@planet.Name</strong>
+                    </div>
+                }
+                <div class="infobox btn-outline-light btn">
+                    <strong class="infoxboxtext">...</strong>
+                </div>
+            }
+            <br />
+            <br />
+            @if (starships != null)
+            {
+                <h3> <strong>Raumschiffe: </strong></h3>
+                foreach (var starship in starships)
+                {
+
+                    <div class="infobox btn-outline-light btn" @onclick="@(()=> NavigateTo(starship.Url))">
+                        <strong class="infoxboxtext">@starship.Name</strong>
+                    </div>
+                }
+                <div class="infobox btn-outline-light btn">
+                    <strong class="infoxboxtext">...</strong>
+                </div>
+            }<br />
+            <br />
+            @if (vehicles != null)
+            {
+                <h3> <strong>Fahrzeuge: </strong></h3>
+                foreach (var vehicle in vehicles)
+                {
+
+                    <div class="infobox btn-outline-light btn" @onclick="@(()=> NavigateTo(vehicle.Url))">
+                        <strong class="infoxboxtext">@vehicle.Name</strong>
+                    </div>
+                }
+                <div class="infobox btn-outline-light btn">
+                    <strong class="infoxboxtext">...</strong>
+                </div>
+            }
+        </div>
+
+    }
+</div>
+
+@code{
+
+
+    [Parameter]
+    public int CharacterId { get; set; }
+    private Planet homePlanet;
+    private NumberFormatInfo numberformat;
+    public Person character;
+    public ICollection<Film> films;
+    public ICollection<Planet> planets;
+    public ICollection<Starship> starships;
+    public ICollection<Vehicle> vehicles;
+    protected override async void OnInitialized()
+    {
+
+ 
+        character = await characterService.GetById(CharacterId);
+        homePlanet = await planetService.GetByUrl(character.Homeworld);
+
+        films = new List<Film>();
+        planets = new List<Planet>();
+        starships = new List<Starship>();
+        vehicles = new List<Vehicle>();
+        //NOT OPTIMAL, DUE TO IILOGICAL SERVER API STRUCTURE
+        var urls = character.Films.Take(5).ToList();
+        foreach (var item in urls)
+        {
+            films.Add(await filmService.GetByUrl(item));
+        }
+        var entities = await planetService.GetEntities(1, 100);
+        var query = from planet in entities
+                    where planet.Residents.Contains(character.Url)
+                    select planet;
+
+        foreach (var planet in query.Take(5).ToList())
+        {
+            planets.Add(planet);
+        }
+        foreach (var starshipUrl in character.Starships.Take(5).ToList())
+        {
+            starships.Add(await starshipService.GetByUrl(starshipUrl));
+        }
+        foreach (var vehicleUrl in character.Vehicles.Take(5).ToList())
+        {
+            vehicles.Add(await vehicleService.GetByUrl(vehicleUrl));
+        }
+       
+
+        StateHasChanged();
+    }
+    public void NavigateTo(string url)
+    {
+        navigation.NavigateTo(url.Replace(@"http://swapi.dev/api/", ""));
+    }
+
+}

@@ -1,0 +1,49 @@
+﻿@page "/films"
+@page "/"
+@inject Repository<Film> filmService
+ 
+@if (films == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div>
+        <p class="title pb">Filme</p>
+        <div class="d-flex justify-content-start flex-wrap p-2">
+            @foreach (Film item in films)
+            {
+
+                <div class="card">
+                    <img class="card-img-top" src="/img/Star_Wars.svg" alt="@item.Title" />
+                    <div class="card-body ">
+                        <h4 class="card-title">@item.Title</h4>
+                        <p class="card-text">
+                            Director: @item.Director<br />
+                            Produtzenten: @item.Producer<br />
+                            Erscheinungsdatum: @item.ReleaseDate<br />
+                        </p>
+                        <a href="/films/@item.EpisodeId" class="card-link ">Mehr Informationen..</a>
+                    </div>
+
+                </div>
+
+            }
+
+        </div>
+    </div>
+
+}
+
+@code {
+    private ICollection<Film> films;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        films = await filmService.GetEntities();
+ 
+        StateHasChanged();
+    }
+
+}

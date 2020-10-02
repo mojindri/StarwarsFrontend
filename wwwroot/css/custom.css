@@ -1,0 +1,70 @@
+a.nav-link {
+  text-align: left;
+  font: normal normal normal 14px/17px Roboto;
+  letter-spacing: 0px;
+  color: #10172c;
+  opacity: 1;
+  cursor: pointer;
+}
+a:hover.nav-link{
+  color: #a4a9b8;
+
+  text-decoration: underline;
+}
+.navspacing {
+  padding: 47px;
+}
+.title {
+    
+  margin-top: 10%;
+  text-align: center;
+  font: normal normal bold 75px/80px Roboto;
+  letter-spacing: 0px;
+  color: #10172c;
+  opacity: 1;
+}
+body {
+  background: #ffffff 0% 0% no-repeat padding-box;
+  font-family: Roboto;
+}
+.underline {
+  text-decoration: underline;
+}
+.titledetail {
+  text-align: left;
+  font: normal normal 300 15px/10px Roboto;
+  letter-spacing: 0px;
+  color: #10172c;
+  margin-top: 30px;
+  opacity: 1;
+}
+.card-link {
+  text-align: left;
+  font: normal normal bold 12px/14px Roboto;
+  letter-spacing: 0px;
+  color: #10172c;
+  opacity: 1;
+}
+div.card {
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+  width: 20rem;
+  margin: 20px;
+}
+div.card:hover {
+  box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.2);
+}
+.details {
+  padding-left: 10%;
+}
+.infobox {
+  background: #bbbbbb3a 0% 0% no-repeat padding-box;
+  border-radius: 1px;
+  padding: 10px;
+  display: inline-block;
+  
+}
+.infoxboxtext{
+    color: #10172C;
+    text-shadow: 0px 0px 1px #00000079 ;
+    font: normal bold 300 15px/10px Roboto;
+}
